@@ -103,18 +103,18 @@ export const colors = {
     900: violet.violet12,
   },
   primary: {
-    25: 'rgb(var(--color-primary-25) / <alpha-value>)',
-    50: 'rgb(var(--color-primary-50) / <alpha-value>)',
-    75: 'rgb(var(--color-primary-75) / <alpha-value>)',
-    100: 'rgb(var(--color-primary-100) / <alpha-value>)',
-    200: 'rgb(var(--color-primary-200) / <alpha-value>)',
-    300: 'rgb(var(--color-primary-300) / <alpha-value>)',
-    400: 'rgb(var(--color-primary-400) / <alpha-value>)',
-    500: 'rgb(var(--color-primary-500) / <alpha-value>)',
-    600: 'rgb(var(--color-primary-600) / <alpha-value>)',
-    700: 'rgb(var(--color-primary-700) / <alpha-value>)',
-    800: 'rgb(var(--color-primary-800) / <alpha-value>)',
-    900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+    25: 'rgb(232 240 240 / <alpha-value>)', // #e8f0f0
+    50: 'rgb(209 224 224 / <alpha-value>)', // #d1e0e0
+    75: 'rgb(185 208 207 / <alpha-value>)', // #b9d0cf
+    100: 'rgb(162 192 191 / <alpha-value>)', // #a2c0bf
+    200: 'rgb(138 176 175 / <alpha-value>)', // #8ab0af
+    300: 'rgb(115 159 158 / <alpha-value>)', // #739f9e
+    400: 'rgb(91 143 142 / <alpha-value>)',  // #5b8f8e
+    500: 'rgb(58 103 102 / <alpha-value>)',  // #3a6766 ← base
+    600: 'rgb(51 90 89 / <alpha-value>)',    // #335a59
+    700: 'rgb(42 75 75 / <alpha-value>)',    // #2a4b4b
+    800: 'rgb(33 60 60 / <alpha-value>)',    // #213c3c
+    900: 'rgb(24 44 44 / <alpha-value>)',    // #182c2c
   },
   ash: {
     25: 'rgb(var(--color-ash-25) / <alpha-value>)',
@@ -214,18 +214,18 @@ export const colors = {
     900: 'rgb(var(--color-sky-900) / <alpha-value>)',
   },
   indigo: {
-    25: 'rgb(var(--color-indigo-25) / <alpha-value>)',
-    50: 'rgb(var(--color-indigo-50) / <alpha-value>)',
-    75: 'rgb(var(--color-indigo-75) / <alpha-value>)',
-    100: 'rgb(var(--color-indigo-100) / <alpha-value>)',
-    200: 'rgb(var(--color-indigo-200) / <alpha-value>)',
-    300: 'rgb(var(--color-indigo-300) / <alpha-value>)',
-    400: 'rgb(var(--color-indigo-400) / <alpha-value>)',
-    500: 'rgb(var(--color-indigo-500) / <alpha-value>)',
-    600: 'rgb(var(--color-indigo-600) / <alpha-value>)',
-    700: 'rgb(var(--color-indigo-700) / <alpha-value>)',
-    800: 'rgb(var(--color-indigo-800) / <alpha-value>)',
-    900: 'rgb(var(--color-indigo-900) / <alpha-value>)',
+    25: 'rgb(232 240 240 / <alpha-value>)', // #e8f0f0
+    50: 'rgb(209 224 224 / <alpha-value>)', // #d1e0e0
+    75: 'rgb(185 208 207 / <alpha-value>)', // #b9d0cf
+    100: 'rgb(162 192 191 / <alpha-value>)', // #a2c0bf
+    200: 'rgb(138 176 175 / <alpha-value>)', // #8ab0af
+    300: 'rgb(115 159 158 / <alpha-value>)', // #739f9e
+    400: 'rgb(91 143 142 / <alpha-value>)',  // #5b8f8e
+    500: 'rgb(58 103 102 / <alpha-value>)',  // #3a6766 ← base
+    600: 'rgb(51 90 89 / <alpha-value>)',    // #335a59
+    700: 'rgb(42 75 75 / <alpha-value>)',    // #2a4b4b
+    800: 'rgb(33 60 60 / <alpha-value>)',    // #213c3c
+    900: 'rgb(24 44 44 / <alpha-value>)',    // #182c2c
   },
   iris: {
     25: 'rgb(var(--color-iris-25) / <alpha-value>)',

@@ -12,7 +12,10 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
-Rails.application.config.assets.precompile += %w[dashboardChart.js]
+Rails.application.config.assets.precompile += %w[dashboardChart.js
+                                                 favicon/favicon-16x16.png
+                                                 favicon/favicon-32x32.png
+                                                 favicon/favicon-96x96.png]
 
 # to take care of fonts in assets pre-compiling
 # Ref: https://stackoverflow.com/questions/56960709/rails-font-cors-policy
