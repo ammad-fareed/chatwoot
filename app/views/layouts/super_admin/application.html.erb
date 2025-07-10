@@ -19,8 +19,16 @@ By default, it renders:
   <meta name="ROBOTS" content="NOODP">
   <meta name="viewport" content="initial-scale=1">
   <title>
-    <%= content_for(:title) %> - <%= application_title %>
+    <%= content_for(:title) %> - <%= "AG Solutions" %>
   </title>
+    <!-- ✅ Super Admin Favicon -->
+  <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+      <link class="favicon" rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <link class="favicon" rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
+      <link class="favicon" rel="icon" type="image/png" sizes="128x128" href="/favicon-128x28.png">
+      <link class="favicon" rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+      <link class="favicon" rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
   <%= render "stylesheet" %>
   <%= vite_client_tag %>
   <%= vite_javascript_tag 'superadmin' %>
