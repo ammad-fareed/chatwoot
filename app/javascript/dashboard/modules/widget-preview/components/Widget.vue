@@ -4,7 +4,6 @@ import WidgetBody from './WidgetBody.vue';
 import WidgetFooter from './WidgetFooter.vue';
 import InputRadioGroup from 'dashboard/routes/dashboard/settings/inbox/components/InputRadioGroup.vue';
 import globalConfigMixin from 'shared/mixins/globalConfigMixin';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'Widget',
@@ -76,7 +75,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ globalConfig: 'globalConfig/get' }),
     getWidgetConfig() {
       return {
         welcomeHeading: this.welcomeHeading,
@@ -149,24 +147,6 @@ export default {
           :config="getWidgetConfig"
         />
         <WidgetFooter :config="getWidgetConfig" />
-        <div class="py-2.5 flex justify-center">
-          <a
-            class="items-center gap-0.5 text-slate-500 dark:text-slate-400 cursor-pointer flex filter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 text-xxs"
-          >
-            <img
-              class="max-w-2.5 max-h-2.5"
-              :src="globalConfig.logoThumbnail"
-            />
-            <span>
-              {{
-                useInstallationName(
-                  $t('INBOX_MGMT.WIDGET_BUILDER.BRANDING_TEXT'),
-                  globalConfig.installationName
-                )
-              }}
-            </span>
-          </a>
-        </div>
       </div>
     </div>
     <div class="flex mt-4 w-[320px]" :style="getBubblePositionStyle">

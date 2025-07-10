@@ -20,13 +20,7 @@ const props = defineProps({
   isListLoading: { type: Boolean, required: true },
 });
 
-const emit = defineEmits([
-  'addFolders',
-  'deleteFolders',
-  'resetFilters',
-  'basicFilterChange',
-  'filtersModal',
-]);
+const emit = defineEmits(['addFolders', 'resetFilters', 'basicFilterChange']);
 
 const { uiSettings, updateUISettings } = useUISettings();
 
@@ -125,49 +119,6 @@ const toggleConversationLayout = () => {
           @click="emit('resetFilters')"
         />
       </template>
-      <template v-if="hasActiveFolders">
-        <div class="relative">
-          <NextButton
-            id="toggleConversationFilterButton"
-            v-tooltip.top-end="$t('FILTER.CUSTOM_VIEWS.EDIT.EDIT_BUTTON')"
-            icon="i-lucide-pen-line"
-            slate
-            xs
-            faded
-            @click="emit('filtersModal')"
-          />
-          <div
-            id="conversationFilterTeleportTarget"
-            class="absolute z-40 mt-2"
-            :class="{ 'ltr:right-0 rtl:left-0': isOnExpandedLayout }"
-          />
-        </div>
-        <NextButton
-          id="toggleConversationFilterButton"
-          v-tooltip.top-end="$t('FILTER.CUSTOM_VIEWS.DELETE.DELETE_BUTTON')"
-          icon="i-lucide-trash-2"
-          ruby
-          xs
-          faded
-          @click="emit('deleteFolders')"
-        />
-      </template>
-      <div v-else class="relative">
-        <NextButton
-          id="toggleConversationFilterButton"
-          v-tooltip.right="$t('FILTER.TOOLTIP_LABEL')"
-          icon="i-lucide-list-filter"
-          slate
-          xs
-          faded
-          @click="emit('filtersModal')"
-        />
-        <div
-          id="conversationFilterTeleportTarget"
-          class="absolute z-40 mt-2"
-          :class="{ 'ltr:right-0 rtl:left-0': isOnExpandedLayout }"
-        />
-      </div>
       <ConversationBasicFilter
         v-if="!hasAppliedFiltersOrActiveFolders"
         :is-on-expanded-layout="isOnExpandedLayout"
