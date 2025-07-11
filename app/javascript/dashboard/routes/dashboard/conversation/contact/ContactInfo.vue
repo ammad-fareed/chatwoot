@@ -215,10 +215,6 @@ export default {
             </a>
           </div>
         </div>
-
-        <p v-if="additionalAttributes.description" class="break-words mb-0.5">
-          {{ additionalAttributes.description }}
-        </p>
         <div class="flex flex-col items-start w-full gap-2">
           <ContactInfoRow
             :href="contact.email ? `mailto:${contact.email}` : ''"
@@ -237,20 +233,6 @@ export default {
             show-copy
           />
           <ContactInfoRow
-            v-if="contact.identifier"
-            :value="contact.identifier"
-            icon="contact-identify"
-            emoji="🪪"
-            :title="$t('CONTACT_PANEL.IDENTIFIER')"
-          />
-          <ContactInfoRow
-            :value="additionalAttributes.company_name"
-            icon="building-bank"
-            emoji="🏢"
-            :title="$t('CONTACT_PANEL.COMPANY')"
-          />
-          <ContactInfoRow
-            v-if="location || additionalAttributes.location"
             :value="location || additionalAttributes.location"
             icon="map"
             emoji="🌍"
@@ -283,15 +265,6 @@ export default {
           faded
           sm
           @click="toggleEditModal"
-        />
-        <NextButton
-          v-tooltip.top-end="$t('CONTACT_PANEL.MERGE_CONTACT')"
-          icon="i-ph-arrows-merge"
-          slate
-          faded
-          sm
-          :disabled="uiFlags.isMerging"
-          @click="openMergeModal"
         />
         <NextButton
           v-if="isAdmin"

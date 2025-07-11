@@ -22,6 +22,7 @@ import SidebarActionsHeader from 'dashboard/components-next/SidebarActionsHeader
 import LinearIssuesList from 'dashboard/components/widgets/conversation/linear/IssuesList.vue';
 import LinearSetupCTA from 'dashboard/components/widgets/conversation/linear/LinearSetupCTA.vue';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
+import { useAdmin } from 'dashboard/composables/useAdmin';
 
 const props = defineProps({
   conversationId: {
@@ -33,6 +34,8 @@ const props = defineProps({
     default: undefined,
   },
 });
+
+const { isAdmin } = useAdmin();
 
 const {
   updateUISettings,
@@ -137,7 +140,7 @@ onMounted(() => {
       @close="closeContactPanel"
     />
     <ContactInfo :contact="contact" :channel-type="channelType" />
-    <div class="pb-8 list-group px-2">
+    <div v-if="isAdmin" class="pb-8 list-group px-2">
       <Draggable
         :list="conversationSidebarItems"
         animation="200"
