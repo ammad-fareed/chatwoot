@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onUnmounted } from 'vue';
+import { ref, computed, watchEffect, onUnmounted } from 'vue';
 import { useToggle } from '@vueuse/core';
 import { useStore } from 'vuex';
 import { useAlert } from 'dashboard/composables';
@@ -8,6 +8,7 @@ import { emitter } from 'shared/helpers/mitt';
 import EmailTranscriptModal from './EmailTranscriptModal.vue';
 import ButtonV4 from 'dashboard/components-next/button/Button.vue';
 import DropdownMenu from 'dashboard/components-next/dropdown-menu/DropdownMenu.vue';
+import axios from 'axios';
 
 import {
   CMD_MUTE_CONVERSATION,
@@ -15,14 +16,46 @@ import {
   CMD_UNMUTE_CONVERSATION,
 } from 'dashboard/helper/commandbar/events';
 
-// No props needed as we're getting currentChat from the store directly
 const store = useStore();
 const { t } = useI18n();
 
+const currentChat = computed(() => store.getters.getSelectedChat);
+const customAttributes = ref({});
+
+const fetchCustomAttributes = async () => {
+  const { data } = await axios.get(
+    `/api/v1/conversations/${currentChat.value.id}/custom_attributes`
+  );
+  customAttributes.value = data || {};
+};
+
+watchEffect(() => {
+  if (currentChat.value?.id) {
+    fetchCustomAttributes();
+  }
+});
+
+const isBotPaused = computed(() => customAttributes.value?.bot_paused === true);
+
+const toggleBotStatus = async () => {
+  await axios.put(
+    `/api/v1/conversations/${currentChat.value.id}/custom_attributes`,
+    {
+      custom_attributes: {
+        bot_paused: !isBotPaused.value,
+      },
+    }
+  );
+
+  useAlert(
+    !isBotPaused.value ? 'Bot paused for this conversation' : 'Bot resumed'
+  );
+
+  await fetchCustomAttributes();
+};
+
 const [showEmailActionsModal, toggleEmailModal] = useToggle(false);
 const [showActionsDropdown, toggleDropdown] = useToggle(false);
-
-const currentChat = computed(() => store.getters.getSelectedChat);
 
 const actionMenuItems = computed(() => {
   const items = [];
@@ -67,7 +100,6 @@ const handleActionClick = ({ action }) => {
   }
 };
 
-// These functions are needed for the event listeners
 const mute = () => {
   store.dispatch('muteConversation', currentChat.value.id);
   useAlert(t('CONTACT_PANEL.MUTED_SUCCESS'));
@@ -91,6 +123,12 @@ onUnmounted(() => {
 
 <template>
   <div class="relative flex items-center gap-2 actions--container">
+    <button
+      class="h-8 px-3 py-1 text-xs font-medium text-n-slate-12 border border-n-slate-300 rounded-md hover:bg-n-alpha-2 transition-colors"
+      @click="toggleBotStatus"
+    >
+      {{ isBotPaused ? 'Resume Bot' : 'Pause Bot' }}
+    </button>
     <div
       v-on-clickaway="() => toggleDropdown(false)"
       class="relative flex items-center group"

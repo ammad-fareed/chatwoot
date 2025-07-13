@@ -32,6 +32,14 @@ Rails.application.routes.draw do
     resource :slack_uploads, only: [:show]
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :conversations do
+        resource :custom_attributes, only: [:show, :update], controller: 'conversations/custom_attributes'
+      end
+    end
+  end
+
   get '/api', to: 'api#index'
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
