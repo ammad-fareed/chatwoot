@@ -92,6 +92,9 @@ export default {
       currentUserId: 'getCurrentUserID',
       globalConfig: 'globalConfig/get',
     }),
+    isAdmin() {
+      return this.currentUser.role === 'administrator';
+    },
   },
   mounted() {
     if (this.currentUserId) {
@@ -286,6 +289,7 @@ export default {
       </FormSection>
     </Policy>
     <FormSection
+      v-if="isAdmin"
       :title="$t('PROFILE_SETTINGS.FORM.ACCESS_TOKEN.TITLE')"
       :description="
         useInstallationName(

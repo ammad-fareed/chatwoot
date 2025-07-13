@@ -8,6 +8,7 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useStorage } from '@vueuse/core';
 import { useSidebarKeyboardShortcuts } from './useSidebarKeyboardShortcuts';
+import { useAdmin } from 'dashboard/composables/useAdmin';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import SidebarGroup from './SidebarGroup.vue';
@@ -27,6 +28,7 @@ const { accountScopedRoute } = useAccount();
 const store = useStore();
 const searchShortcut = useKbd([`$mod`, 'k']);
 const { t } = useI18n();
+const { isAdmin } = useAdmin();
 
 const toggleShortcutModalFn = show => {
   if (show) {
@@ -106,8 +108,10 @@ const newReportRoutes = () => [
 const reportRoutes = computed(() => newReportRoutes());
 
 const menuItems = computed(() => {
-  return [
-    {
+  const items = [];
+
+  if (isAdmin.value) {
+    items.push({
       name: 'Inbox',
       label: t('SIDEBAR.INBOX'),
       icon: 'i-lucide-inbox',
@@ -116,30 +120,41 @@ const menuItems = computed(() => {
       getterKeys: {
         badge: 'notifications/getHasUnreadNotifications',
       },
-    },
-    {
-      name: 'Conversation',
-      label: t('SIDEBAR.CONVERSATIONS'),
-      icon: 'i-lucide-message-circle',
-      children: [
+    });
+  }
+
+  items.push({
+    name: 'Conversation',
+    label: t('SIDEBAR.CONVERSATIONS'),
+    icon: 'i-lucide-message-circle',
+    children: (() => {
+      const children = [
         {
           name: 'All',
           label: t('SIDEBAR.ALL_CONVERSATIONS'),
           activeOn: ['inbox_conversation'],
           to: accountScopedRoute('home'),
         },
-        {
-          name: 'Mentions',
-          label: t('SIDEBAR.MENTIONED_CONVERSATIONS'),
-          activeOn: ['conversation_through_mentions'],
-          to: accountScopedRoute('conversation_mentions'),
-        },
-        {
-          name: 'Unattended',
-          activeOn: ['conversation_through_unattended'],
-          label: t('SIDEBAR.UNATTENDED_CONVERSATIONS'),
-          to: accountScopedRoute('conversation_unattended'),
-        },
+      ];
+
+      if (isAdmin.value) {
+        children.push(
+          {
+            name: 'Mentions',
+            label: t('SIDEBAR.MENTIONED_CONVERSATIONS'),
+            activeOn: ['conversation_through_mentions'],
+            to: accountScopedRoute('conversation_mentions'),
+          },
+          {
+            name: 'Unattended',
+            label: t('SIDEBAR.UNATTENDED_CONVERSATIONS'),
+            activeOn: ['conversation_through_unattended'],
+            to: accountScopedRoute('conversation_unattended'),
+          }
+        );
+      }
+
+      children.push(
         {
           name: 'Folders',
           label: t('SIDEBAR.CUSTOM_VIEWS_FOLDER'),
@@ -178,9 +193,14 @@ const menuItems = computed(() => {
                 inbox,
               }),
           })),
-        },
-      ],
-    },
+        }
+      );
+
+      return children;
+    })(),
+  });
+
+  items.push(
     {
       name: 'Captain',
       icon: 'i-woot-captain',
@@ -211,11 +231,7 @@ const menuItems = computed(() => {
         {
           name: 'All Contacts',
           label: t('SIDEBAR.ALL_CONTACTS'),
-          to: accountScopedRoute(
-            'contacts_dashboard_index',
-            {},
-            { page: 1, search: undefined }
-          ),
+          to: accountScopedRoute('contacts_dashboard_index'),
           activeOn: ['contacts_dashboard_index', 'contacts_edit'],
         },
         {
@@ -362,8 +378,11 @@ const menuItems = computed(() => {
           }),
         },
       ],
-    },
-    {
+    }
+  );
+
+  if (isAdmin.value) {
+    items.push({
       name: 'Settings',
       label: t('SIDEBAR.SETTINGS'),
       icon: 'i-lucide-bolt',
@@ -459,8 +478,10 @@ const menuItems = computed(() => {
           to: accountScopedRoute('billing_settings_index'),
         },
       ],
-    },
-  ];
+    });
+  }
+
+  return items;
 });
 </script>
 

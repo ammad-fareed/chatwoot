@@ -20,8 +20,13 @@ const router = useRouter();
 
 const contact = useMapGetter('contacts/getContactById');
 const uiFlags = useMapGetter('contacts/getUIFlags');
+const currentUser = useMapGetter('getCurrentUser');
 
-const activeTab = ref('attributes');
+const isAdmin = computed(() => {
+  return currentUser.value?.role === 'administrator';
+});
+
+const activeTab = ref(isAdmin.value ? 'attributes' : 'notes');
 const contactMergeRef = ref(null);
 
 const isFetchingItem = computed(() => uiFlags.value.isFetchingItem);
@@ -44,7 +49,11 @@ const CONTACT_TABS_OPTIONS = [
 ];
 
 const tabs = computed(() => {
-  return CONTACT_TABS_OPTIONS.map(tab => ({
+  const baseTabs = CONTACT_TABS_OPTIONS.filter(tab => {
+    return isAdmin.value || tab.value === 'notes';
+  });
+
+  return baseTabs.map(tab => ({
     label: t(`CONTACTS_LAYOUT.SIDEBAR.TABS.${tab.key}`),
     value: tab.value,
   }));
@@ -118,6 +127,7 @@ const toggleContactBlock = async isBlocked => {
 };
 
 onMounted(() => {
+  activeTab.value = isAdmin.value ? 'attributes' : 'notes';
   fetchActiveContact();
   fetchContactNotes();
   fetchContactConversations();
@@ -166,13 +176,13 @@ onMounted(() => {
         </div>
         <template v-else>
           <ContactCustomAttributes
-            v-if="activeTab === 'attributes'"
+            v-if="activeTab === 'attributes' && isAdmin"
             :selected-contact="selectedContact"
           />
           <ContactNotes v-if="activeTab === 'notes'" />
-          <ContactHistory v-if="activeTab === 'history'" />
+          <ContactHistory v-if="activeTab === 'history' && isAdmin" />
           <ContactMerge
-            v-if="activeTab === 'merge'"
+            v-if="activeTab === 'merge' && isAdmin"
             ref="contactMergeRef"
             :selected-contact="selectedContact"
             @go-to-contacts-list="goToContactsList"

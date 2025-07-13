@@ -9,6 +9,7 @@ import Input from 'dashboard/components-next/input/Input.vue';
 import ComboBox from 'dashboard/components-next/combobox/ComboBox.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import PhoneNumberInput from 'dashboard/components-next/phonenumberinput/PhoneNumberInput.vue';
+import { useMapGetter } from 'dashboard/composables/store';
 
 const props = defineProps({
   contactData: {
@@ -24,8 +25,9 @@ const props = defineProps({
     default: false,
   },
 });
-
 const emit = defineEmits(['update']);
+const currentUser = useMapGetter('getCurrentUser');
+const isAdmin = computed(() => currentUser.value.role === 'administrator');
 
 const { t } = useI18n();
 
@@ -135,13 +137,19 @@ const editDetailsForm = computed(() =>
   }))
 );
 
-const socialProfilesForm = computed(() =>
-  Object.entries(SOCIAL_CONFIG).map(([key, icon]) => ({
+const socialProfilesForm = computed(() => {
+  const allProfiles = Object.entries(SOCIAL_CONFIG);
+
+  const filteredProfiles = isAdmin.value
+    ? allProfiles
+    : allProfiles.filter(([key]) => !['TWITTER', 'GITHUB'].includes(key));
+
+  return filteredProfiles.map(([key, icon]) => ({
     key,
     placeholder: t(`CONTACTS_LAYOUT.CARD.SOCIAL_MEDIA.FORM.${key}.PLACEHOLDER`),
     icon,
-  }))
-);
+  }));
+});
 
 const isValidationField = key => {
   const field = FORM_CONFIG[key]?.field;

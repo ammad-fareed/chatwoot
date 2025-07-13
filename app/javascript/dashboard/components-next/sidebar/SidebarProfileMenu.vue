@@ -52,7 +52,7 @@ const menuItems = computed(() => {
       },
     },
     {
-      show: true,
+      show: currentUser.value.role === 'administrator',
       showOnCustomBrandedInstance: true,
       label: t('SIDEBAR_ITEMS.KEYBOARD_SHORTCUTS'),
       icon: 'i-lucide-keyboard',
