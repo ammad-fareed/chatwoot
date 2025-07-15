@@ -1,13 +1,15 @@
 <script setup>
-import { h, computed, onMounted } from 'vue';
-import { provideSidebarContext } from './provider';
+import { h, computed, onMounted, ref, watch } from 'vue';
+import { useBreakpoints, useStorage } from '@vueuse/core';
+import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
+
 import { useAccount } from 'dashboard/composables/useAccount';
 import { useKbd } from 'dashboard/composables/utils/useKbd';
 import { useMapGetter } from 'dashboard/composables/store';
-import { useStore } from 'vuex';
-import { useI18n } from 'vue-i18n';
-import { useStorage } from '@vueuse/core';
 import { useSidebarKeyboardShortcuts } from './useSidebarKeyboardShortcuts';
+import { provideSidebarContext } from './provider';
 import { useAdmin } from 'dashboard/composables/useAdmin';
 
 import Button from 'dashboard/components-next/button/Button.vue';
@@ -24,25 +26,38 @@ const emit = defineEmits([
   'showCreateAccountModal',
 ]);
 
-const { accountScopedRoute } = useAccount();
 const store = useStore();
+const { accountScopedRoute } = useAccount();
 const searchShortcut = useKbd([`$mod`, 'k']);
 const { t } = useI18n();
 const { isAdmin } = useAdmin();
+const route = useRoute();
+
+const breakpoints = useBreakpoints({ mobile: 0, tablet: 768 });
+const isMobile = breakpoints.smaller('tablet');
+const isSidebarVisible = ref(true);
+
+watch(
+  isMobile,
+  value => {
+    isSidebarVisible.value = !value;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => route.fullPath,
+  () => {
+    if (isMobile.value) isSidebarVisible.value = false;
+  }
+);
 
 const toggleShortcutModalFn = show => {
-  if (show) {
-    emit('openKeyShortcutModal');
-  } else {
-    emit('closeKeyShortcutModal');
-  }
+  if (show) emit('openKeyShortcutModal');
+  else emit('closeKeyShortcutModal');
 };
-
 useSidebarKeyboardShortcuts(toggleShortcutModalFn);
 
-// We're using localStorage to store the expanded item in the sidebar
-// This helps preserve context when navigating between portal and dashboard layouts
-// and also when the user refreshes the page
 const expandedItem = useStorage(
   'next-sidebar-expanded-item',
   null,
@@ -52,10 +67,7 @@ const expandedItem = useStorage(
 const setExpandedItem = name => {
   expandedItem.value = expandedItem.value === name ? null : name;
 };
-provideSidebarContext({
-  expandedItem,
-  setExpandedItem,
-});
+provideSidebarContext({ expandedItem, setExpandedItem });
 
 const inboxes = useMapGetter('inboxes/getInboxes');
 const labels = useMapGetter('labels/getLabelsOnSidebar');
@@ -136,7 +148,6 @@ const menuItems = computed(() => {
           to: accountScopedRoute('home'),
         },
       ];
-
       if (isAdmin.value) {
         children.push(
           {
@@ -486,9 +497,23 @@ const menuItems = computed(() => {
 </script>
 
 <template>
-  <aside
-    class="w-[200px] bg-n-solid-2 rtl:border-l ltr:border-r border-n-weak h-screen flex flex-col text-sm pb-1"
+  <!-- Mobile Toggle Button -->
+  <button
+    class="mt-2 fixed z-50 top-14 right-0 px-2 py-2 bg-primary-500 text-white rounded-md shadow-md md:hidden flex items-center gap-2"
+    @click="isSidebarVisible = !isSidebarVisible"
   >
+    <span class="i-lucide-menu size-5" />
+    <span class="text-sm">
+      {{ isSidebarVisible ? 'Hide' : 'Show' }}
+    </span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside
+    v-show="isSidebarVisible"
+    class="fixed md:relative z-40 md:z-auto w-[200px] bg-n-solid-2 rtl:border-l ltr:border-r border-n-weak h-screen flex flex-col text-sm pb-1 transition-transform duration-200"
+  >
+    <!-- Top Section -->
     <section class="grid gap-2 mt-2 mb-4">
       <div class="flex items-center min-w-0 gap-2 px-2">
         <div class="grid flex-shrink-0 size-6 place-content-center">
@@ -509,9 +534,7 @@ const menuItems = computed(() => {
           <span class="flex-grow text-left">
             {{ t('COMBOBOX.SEARCH_PLACEHOLDER') }}
           </span>
-          <span
-            class="hidden tracking-wide pointer-events-none select-none text-n-slate-10"
-          >
+          <span class="hidden tracking-wide text-n-slate-10">
             {{ searchShortcut }}
           </span>
         </RouterLink>
@@ -528,6 +551,8 @@ const menuItems = computed(() => {
         </ComposeConversation>
       </div>
     </section>
+
+    <!-- Menu -->
     <nav class="grid flex-grow gap-2 px-2 pb-5 overflow-y-scroll no-scrollbar">
       <ul class="flex flex-col gap-1.5 m-0 list-none">
         <SidebarGroup
@@ -537,6 +562,8 @@ const menuItems = computed(() => {
         />
       </ul>
     </nav>
+
+    <!-- Bottom Section -->
     <section
       class="p-1 border-t border-n-weak shadow-[0px_-2px_4px_0px_rgba(27,28,29,0.02)] flex-shrink-0 flex justify-between gap-2 items-center"
     >
