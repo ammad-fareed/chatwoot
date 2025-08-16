@@ -70,6 +70,7 @@ const setExpandedItem = name => {
 provideSidebarContext({ expandedItem, setExpandedItem });
 
 const inboxes = useMapGetter('inboxes/getInboxes');
+const currentUser = useMapGetter('getCurrentUser');
 const labels = useMapGetter('labels/getLabelsOnSidebar');
 const teams = useMapGetter('teams/getMyTeams');
 const contactCustomViews = useMapGetter('customViews/getContactCustomViews');
@@ -87,9 +88,16 @@ onMounted(() => {
   store.dispatch('customViews/get', 'contact');
 });
 
-const sortedInboxes = computed(() =>
-  inboxes.value.slice().sort((a, b) => a.name.localeCompare(b.name))
-);
+const sortedInboxes = computed(() => {
+  const userInboxes = inboxes.value.filter(inbox => {
+    // Check if the current user is assigned to this inbox
+    return inbox.inbox_members?.some(
+      member => member.user_id === currentUser.value.id
+    );
+  });
+
+  return userInboxes.sort((a, b) => a.name.localeCompare(b.name));
+});
 
 const newReportRoutes = () => [
   {
