@@ -90,8 +90,7 @@ onMounted(() => {
 
 const sortedInboxes = computed(() => {
   const userInboxes = inboxes.value.filter(inbox => {
-    // Check if the current user is assigned to this inbox
-    return inbox.inbox_members?.some(
+    return inbox.inbox_members.some(
       member => member.user_id === currentUser.value.id
     );
   });
