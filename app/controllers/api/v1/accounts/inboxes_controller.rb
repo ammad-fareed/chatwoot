@@ -7,7 +7,12 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   before_action :check_authorization, except: [:show]
 
   def index
-    @inboxes = policy_scope(Current.account.inboxes.order_by_name.includes(:channel, { avatar_attachment: [:blob] }))
+    @inboxes = Current.account.inboxes
+                      .joins(:inbox_members)
+                      .where(inbox_members: { user_id: Current.user.id })
+                      .order_by_name
+                      .includes(:channel, { avatar_attachment: [:blob] })
+                      .distinct
   end
 
   def show; end
