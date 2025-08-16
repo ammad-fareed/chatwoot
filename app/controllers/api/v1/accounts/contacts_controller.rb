@@ -125,6 +125,13 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     @resolved_contacts = Current.account.contacts.resolved_contacts
 
     @resolved_contacts = @resolved_contacts.tagged_with(params[:labels], any: true) if params[:labels].present?
+
+    user_inbox_ids = Current.user.assigned_inboxes.pluck(:id)
+
+    @resolved_contacts = @resolved_contacts.joins(:contact_inboxes)
+                                           .where(contact_inboxes: { inbox_id: user_inbox_ids })
+                                           .distinct
+
     @resolved_contacts
   end
 
