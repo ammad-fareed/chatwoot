@@ -193,17 +193,19 @@ const menuItems = computed(() => {
           label: t('SIDEBAR.CHANNELS'),
           icon: 'i-lucide-mailbox',
           activeOn: ['conversation_through_inbox'],
-          children: sortedInboxes.value.map(inbox => ({
-            name: `${inbox.name}-${inbox.id}`,
-            label: inbox.name,
-            to: accountScopedRoute('inbox_dashboard', { inbox_id: inbox.id }),
-            component: leafProps =>
-              h(ChannelLeaf, {
-                label: leafProps.label,
-                active: leafProps.active,
-                inbox,
-              }),
-          })),
+          children: sortedInboxes.value
+            .filter(inbox => inbox.inbox_members?.some(m => m.user_id === 2))
+            .map(inbox => ({
+              name: `${inbox.name}-${inbox.id}`,
+              label: inbox.name,
+              to: accountScopedRoute('inbox_dashboard', { inbox_id: inbox.id }),
+              component: leafProps =>
+                h(ChannelLeaf, {
+                  label: leafProps.label,
+                  active: leafProps.active,
+                  inbox,
+                }),
+            })),
         }
       );
 
