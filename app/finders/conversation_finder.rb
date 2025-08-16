@@ -102,6 +102,9 @@ class ConversationFinder
       current_user,
       current_account
     ).perform
+
+    @conversations = @conversations.where(assignee_id: current_user.id)
+
     filter_by_conversation_type if params[:conversation_type]
     @conversations
   end
