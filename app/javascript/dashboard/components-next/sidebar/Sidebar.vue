@@ -1,4 +1,5 @@
 <script setup>
+/* eslint no-console: 0 */
 import { h, computed, onMounted, ref, watch } from 'vue';
 import { useBreakpoints, useStorage } from '@vueuse/core';
 import { useRoute } from 'vue-router';
@@ -89,6 +90,8 @@ onMounted(() => {
 });
 
 const sortedInboxes = computed(() => {
+  console.log('Current user:', currentUser.value); // Debug
+  console.log('Inboxes:', inboxes.value); // Debug
   const userInboxes = inboxes.value.filter(inbox => {
     return inbox.inbox_members.some(
       member => member.user_id === currentUser.value.id
