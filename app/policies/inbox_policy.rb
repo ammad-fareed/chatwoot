@@ -11,7 +11,9 @@ class InboxPolicy < ApplicationPolicy
     end
 
     def resolve
-      user.assigned_inboxes
+      scope.joins(:inbox_members)
+           .where(inbox_members: { user_id: user.id })
+           .distinct
     end
   end
 
@@ -20,10 +22,9 @@ class InboxPolicy < ApplicationPolicy
   end
 
   def show?
-    # FIXME: for agent bots, lets bring this validation to policies as well in future
     return true if @user.is_a?(AgentBot)
 
-    Current.user.assigned_inboxes.include? record
+    Current.user.assigned_inboxes.include?(record)
   end
 
   def assignable_agents?
